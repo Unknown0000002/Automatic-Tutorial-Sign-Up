@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Tutorial Sign Up</title>
+		<link href="styles.css" rel="stylesheet" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/cash/8.1.1/cash.min.js"></script>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+			crossorigin="anonymous"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"
+		/>
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+			crossorigin="anonymous"
+		></script>
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+		<script>
+			let data = <%- listed %>;
+		</script>
+	</head>
+	<body>
+		<div class="container my-3">
+			<div class="d-flex justify-content-end">
+				<button
+					data-bs-toggle="tooltip"
+					data-bs-placement="bottom"
+					title="End Process"
+					class="btn-close"
+					id="endProcessBtn"
+				></button>
+			</div>
+			<h2 class="mb-3">Server</h2>
+			<button
+				class="btn <%- serverRunning === 'false' ? 'hidden' : '' %> btn-danger"
+				id="stopServerBtn"
+			>
+				Stop Server
+			</button>
+			<button
+				class="btn <%- serverRunning === 'true' ? 'hidden' : '' %> btn-primary"
+				id="startServerBtn"
+			>
+				Start Server
+			</button>
+			<div class="alert alert-success hidden mt-3" id="serverStartedAlert">
+				Server successfully started!
+			</div>
+			<div class="alert alert-success hidden mt-3" id="serverStoppedAlert">
+				Server successfully stopped!
+			</div>
+
+			<hr />
+
+			<h2>Manage Credentials</h2>
+			<form id="credentialForm">
+				<div class="mb-3">
+					<label for="usernameInput" class="form-label">Username</label>
+					<input
+						class="form-control"
+						value="<%- username %>"
+						id="usernameInput"
+						required
+					/>
+				</div>
+
+				<div class="mb-3">
+					<label for="passwordInput" class="form-label">Password</label>
+					<input
+						class="form-control"
+						id="passwordInput"
+						type="password"
+						value="<%- password %>"
+						required
+					/>
+				</div>
+
+				<div class="mb-3 form-check">
+					<input class="form-check-input" type="checkbox"
+					id="enableLoggingCheck" <%- enableLogging ? 'checked' : '' %> />
+					<label class="form-check-label" for="enableLoggingCheck">
+						Enable Logging
+					</label>
+				</div>
+
+				<div class="mb-3">
+					<button
+						type="submit"
+						id="credentialSubmitButton"
+						class="btn btn-primary"
+					>
+						Update
+					</button>
+				</div>
+			</form>
+
+			<div id="credentialAlertDanger" class="alert alert-danger hidden">
+				Invalid Credentials
+			</div>
+			<div id="credentialAlertSuccess" class="alert alert-success hidden mt-3">
+				Successfully Updated!
+			</div>
+
+			<hr />
+
+			<h2>Select Teachers</h2>
+			<form id="teacherForm">
+				<div class="input-group">
+					<input
+						type="text"
+						placeholder="Add Teacher..."
+						class="form-control"
+						required
+						id="teacherInput"
+					/>
+					<button
+						class="btn btn-primary"
+						data-bs-toggle="tooltip"
+						data-bs-placement="bottom"
+						title="Add"
+						type="submit"
+					>
+						<i class="bi bi-plus"></i>
+					</button>
+				</div>
+
+				<div class="alert alert-danger mt-3 hidden" id="alert" role="alert">
+					Teacher is already in the list.
+				</div>
+			</form>
+
+			<div class="mt-3"></div>
+
+			<button id="clearBtn" class="btn btn-danger">Clear</button>
+
+			<ul class="list-group my-3" id="main"></ul>
+
+			<button id="teacherListSubmit" class="btn btn-primary">Update</button>
+		</div>
+		<script src="handleServer.js"></script>
+		<script src="handleCredentials.js"></script>
+		<script src="script.js"></script>
+	</body>
+</html>
