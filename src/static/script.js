@@ -12,6 +12,11 @@ clearBtn.onclick = handleClear;
 
 teacherListSubmit.onclick = handleListUpdate;
 
+mainEl.ondragover = event => {
+	event.preventDefault();
+	showDroppers();
+};
+
 let unique = () => {
 	return Math.floor((1 + Math.random()) * 0x10000)
 		.toString(16)
@@ -21,7 +26,11 @@ let unique = () => {
 function createItem(text) {
 	const itemEl = document.createElement('li');
 	itemEl.id = `a${unique()}`;
-	itemEl.classList.add('list-group-item', 'list-group-item-action');
+	itemEl.classList.add(
+		'list-item',
+		'list-group-item',
+		'list-group-item-action'
+	);
 	itemEl.innerHTML = `
     <div class="d-flex justify-content-between">
     	<span>${text}</span><button class="btn-close"></button>
@@ -31,7 +40,6 @@ function createItem(text) {
 	itemEl.children[0].children[1].onclick = handleDelete;
 	itemEl.draggable = true;
 	itemEl.ondragstart = event => {
-		showDroppers();
 		event.target.classList.add('active');
 		event.dataTransfer.setData('id', `${itemEl.id}`);
 	};
@@ -52,7 +60,6 @@ function createDropper() {
 	};
 
 	dropperEl.ondrop = event => {
-		console.log(event.dataTransfer.getData('id'));
 		const draggable = document.querySelector(
 			`#${event.dataTransfer.getData('id')}`
 		);
@@ -82,7 +89,7 @@ function handleAfterDrop() {
 	let els = document.querySelector('#main').children;
 
 	Array.from(els).forEach((el, index) => {
-		if (!$(el).hasClass('list-group-item')) {
+		if (!$(el).hasClass('list-item')) {
 			return;
 		}
 
@@ -110,23 +117,6 @@ function handleAfterDrop() {
 		}
 	});
 
-	const droppers = document.querySelectorAll('#main>.dropper');
-
-	for (const dropper of droppers) {
-		dropper.ondragover = event => {
-			event.preventDefault();
-		};
-
-		dropper.ondrop = event => {
-			const draggable = document.querySelector(
-				`#${event.dataTransfer.getData('id')}`
-			);
-			$(dropper).after(draggable);
-			dropper.remove();
-			handleAfterDrop();
-		};
-	}
-
 	updateData();
 }
 
@@ -139,11 +129,7 @@ function showDroppers() {
 }
 
 function hideDroppers() {
-	const droppers = document.querySelectorAll('#main>.dropper');
-
-	Array.from(droppers).forEach(dropper =>
-		dropper.classList.remove('dropper-active')
-	);
+	$('#main>.dropper').removeClass('dropper-active');
 }
 
 function handleSubmit(event) {
@@ -177,7 +163,7 @@ function renderData(data) {
 }
 
 function updateData() {
-	const listEl = document.querySelectorAll('#main>.list-group-item');
+	const listEl = document.querySelectorAll('#main>.list-item');
 
 	data = [];
 
