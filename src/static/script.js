@@ -1,4 +1,3 @@
-// let data = ['1', '2'];
 const mainEl = document.querySelector('#main');
 const formEl = document.querySelector('#teacherForm');
 const inputEl = document.querySelector('#teacherInput');
@@ -144,7 +143,7 @@ function handleSubmit(event) {
 			}
 		}
 		hideAlert();
-		data.push(inputEl.value);
+		data.push(inputEl.value.trim());
 		renderData(data);
 		inputEl.value = '';
 	} catch (error) {

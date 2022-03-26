@@ -6,11 +6,11 @@ const app = express();
 let sessionCookies = {};
 let stringCookies = '';
 const regex = /^([A-Za-z\-]+?)=(.*?);/g;
-const matches = ['study hall', 'quiet homework'];
+const matches = ['study hall', 'quiet homework', 'hw'];
 const CronJob = require('cron').CronJob;
 const fs = require('fs');
 const { promisify } = require('util');
-const PORT = 3;
+const PORT = 4;
 let serverRunning = false;
 
 const fsWriteFile = promisify(fs.writeFile);
@@ -71,7 +71,7 @@ async function login(exit = false, credentials) {
 
 	if (res.data.trim() === '<AUTHENTICATION>captcha</AUTHENTICATION>') {
 		console.log(
-			'You have gotten the credentials wrong too many times. You will need to fill out a captcha at http://srvusd.infinitecampus.org'
+			'You have gotten the credentials wrong too many times. You will need to fill out a captcha at https://srvusd.infinitecampus.org'
 		);
 		if (exit) process.exit(1);
 		else return false;
@@ -155,12 +155,12 @@ async function run() {
 
 		const schedule = credentialsRes.data;
 
-		if (schedule.length <= 0 && enableLogging) {
+		if (schedule?.length <= 0 && enableLogging) {
 			console.log('No Sessions Found.\n');
 		}
 
 		for (const session of schedule) {
-			if (session.sessionOpen) {
+			if (session.sessionOpen && Array.isArray(session.offerings)) {
 				const teachers = [];
 
 				for (const teacher of listed) {
@@ -186,7 +186,7 @@ async function run() {
 						signedUp = true;
 						if (enableLogging) {
 							console.log(
-								`Already signed up to ${teacher} for ${session.sessionName}\n.`
+								`Already signed up to ${teacher} for ${session.sessionName}.\n`
 							);
 						}
 						break;
@@ -230,13 +230,22 @@ async function run() {
 			}
 		}
 	} catch (error) {
-		console.log('no success');
+		console.log(error);
+		console.log('Error has occurred. No success');
 		process.exit(1);
 	}
 }
 
 async function start() {
-	const { listed } = await readConfig();
+	const { username, password, listed } = await readConfig();
+
+	if (!username || !password) {
+		console.log(
+			'There is no password, username or both entered. To continue, enter valid credentials.\n'
+		);
+
+		process.exit(1);
+	}
 
 	if (listed && listed.length > 0) {
 		const result = await login();
@@ -248,7 +257,7 @@ async function start() {
 		serverRunning = true;
 
 		cronJob = new CronJob(
-			'* * 12 * * *',
+			'0 0 * * * *',
 			run,
 			null,
 			true,
@@ -261,7 +270,7 @@ async function start() {
 		console.log('Successfully started server.\n');
 	} else {
 		console.log(
-			'The list contains 0 teachers, so ending process. To continue, add teachers to the list.'
+			'The list contains 0 teachers, so ending process. To continue, add teachers to the list.\n'
 		);
 		process.exit(1);
 	}
@@ -294,6 +303,8 @@ app.get('/', async (req, res) => {
 
 app.put('/api/submit/list', async (req, res) => {
 	const teachers = req.body;
+
+	teachers.forEach(teacher => teacher.trim());
 
 	const contents = await readConfig();
 
@@ -334,6 +345,12 @@ app.put('/api/submit/credentials', async (req, res) => {
 	contents.enableLogging = Boolean(enableLogging);
 
 	await writeConfig(contents);
+
+	if (stringCookies) {
+		const result = await login();
+		if (!result) stop();
+	}
+
 	return res.status(200).json({ success: true });
 	// }
 
