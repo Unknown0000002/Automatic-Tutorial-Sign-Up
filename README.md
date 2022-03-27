@@ -18,8 +18,6 @@ This project allows you to automate signing up for homework/study hall. All the 
 
 The project firsts uses your credentials to login into your account so it can actually sign up for the tutorials. Once logged in, it will run through the schedule and find all the tutorials that have your preferred teachers. From there it will try to sign up to those tutorials. If enable logging is on, it will give you information on which tutorials you are signed up for.
 
-This whole project is powered using infinite's campus api which apparently anyone can use.
-
 ## Common Errors
 
 - You did not enter valid credentials.
