@@ -155,7 +155,7 @@ async function run() {
 
 		const schedule = credentialsRes.data;
 
-		if (schedule?.length <= 0 && enableLogging) {
+		if (schedule && schedule.length <= 0 && enableLogging) {
 			console.log('No Sessions Found.\n');
 		}
 
@@ -230,8 +230,10 @@ async function run() {
 			}
 		}
 	} catch (error) {
-		console.log(error);
-		console.log('Error has occurred. No success');
+		if (error?.response?.status === 401) {
+			return await restart();
+		}
+		console.log('Error has occurred. Try again later.');
 		process.exit(1);
 	}
 }
@@ -288,6 +290,13 @@ function stop() {
 	}
 	serverRunning = false;
 	console.log('Successfully stopped server.\n');
+}
+
+async function restart() {
+	console.log('Restarting Server...\n');
+	stop();
+	await start();
+	console.log('Successfully Restarted Server\n');
 }
 
 app.get('/', async (req, res) => {
