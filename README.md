@@ -16,13 +16,14 @@ I was bored.
 
 This project allows you to automate signing up for homework/study hall. All the information from the localhost page is stored in the `config.json` file. The localhost page is there to make configuring more user friendly, but if you feel more comfortable you can edit the `config.json` directly.
 
-The project firsts uses your credentials to login into your account so it can actually sign up for the tutorials. Once logged in, it will run through the schedule and find all the tutorials that have your preferred teachers. From there it will try to sign up to those tutorials. If enable logging is on, it will give you information on which tutorials you are signed up for.
+The project firsts uses your credentials to login into your account so it can actually sign up for the tutorials. Once logged in, it will run through the schedule and find all the tutorials that have your preferred teachers. From there it will try to sign up to those tutorials. If enable logging is on, it will give you information on which tutorials you are signed up for. It will keep trying to sign you up in intervals.
 
 ## Common Errors
 
 - You did not enter valid credentials.
 - Captcha Error: You tried to use invalid credentials and now infinite campus thinks your trying to hack someone's account. To fix, go to the infinite campus website and login from there and complete the captcha.
-- The process ended on purpose. Likely, some human error. Read the output in the terminal for further directions. If it says "Error has occurred," run the project again. If it still gives the same output then delete the project you are using and install the project again from the [repository](https://github.com/Unknown0000002/Automatic-Tutorial-Sign-Up). If it still does not work then give up.
+- The process ended on purpose. Likely, some human error. Read the output in the terminal for further directions. If it says "Error has occurred," run the project again. If it still gives the same output then delete the project you are using and install the project again from the [repository](https://github.com/Unknown0000002/Automatic-Tutorial-Sign-Up).
+- You did not install the dependencies required to run the project. Execute `npm i` to install them.
 
 ## Some Stuff To Know
 
