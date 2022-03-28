@@ -10,7 +10,7 @@ const matches = ['study hall', 'quiet homework', 'hw'];
 const CronJob = require('cron').CronJob;
 const fs = require('fs');
 const { promisify } = require('util');
-const PORT = 4;
+const PORT = 3;
 let serverRunning = false;
 
 const fsWriteFile = promisify(fs.writeFile);
@@ -230,11 +230,11 @@ async function run() {
 			}
 		}
 	} catch (error) {
-		if (error?.response?.status === 401) {
-			return await restart();
-		}
 		console.log('Error has occurred. Try again later.');
-		process.exit(1);
+
+		if (error?.response?.status === 401) {
+			return restart();
+		}
 	}
 }
 
@@ -250,7 +250,13 @@ async function start() {
 	}
 
 	if (listed && listed.length > 0) {
-		const result = await login();
+		let result;
+		try {
+			result = await login();
+		} catch (error) {
+			console.log('login error');
+			return stop();
+		}
 
 		if (!result) {
 			return stop();
