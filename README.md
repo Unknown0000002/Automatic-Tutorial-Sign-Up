@@ -16,7 +16,7 @@ I was bored.
 
 This project allows you to automate signing up for homework/study hall. All the information from the localhost page is stored in the `config.json` file. The localhost page is there to make configuring more user friendly, but if you feel more comfortable you can edit the `config.json` directly.
 
-The project firsts uses your credentials to login into your account so it can actually sign up for the tutorials. Once logged in, it will run through the schedule and find all the tutorials that have your preferred teachers. From there it will try to sign up to those tutorials. If enable logging is on, it will give you information on which tutorials you are signed up for. It will keep trying to sign you up in intervals.
+The project first uses your credentials to login into your account so it can actually sign up for the tutorials. Once logged in, it will run through the schedule and find all the tutorials that have your preferred teachers. From there it will try to sign up for those tutorials. If enable logging is on, it will give you information on which tutorials you are signed up for. It will keep trying to sign you up in intervals.
 
 ## Common Errors
 
@@ -27,7 +27,7 @@ The project firsts uses your credentials to login into your account so it can ac
 
 ## Some Stuff To Know
 
-- This project only signs up for homework/study hall tutorials. When it comes to selecting homework tutorials, it is not 100% accurate, so I advise to keep checking.
+- This project only signs up for homework/study hall tutorials. When it comes to selecting homework tutorials, it is not 100% accurate, so I advise you to keep checking.
 
 - Your credentials are **ONLY** stored in the `config.json` and will only be used to login to the infinite campus website.
 
@@ -47,7 +47,7 @@ Follow these steps to set up the project. The set up might seem really long, but
 
 4. Extract the zip file. Locate the files extracted. Then delete the zip file.
 
-5. Next open vscode. From there in Visual Studio Code menu bar, choose File > Open > Folder, or use the shortcut `Ctrl + K Ctrl + O`. Then browse to the extracted files' location.
+5. Next open vscode. From there in the Visual Studio Code menu bar, choose File > Open > Folder, or use the shortcut `Ctrl + K Ctrl + O`. Then browse to the extracted files' location.
 
 ![](assets/screenshot2.png)
 
@@ -67,7 +67,7 @@ Follow these steps to set up the project. The set up might seem really long, but
 
 ![](assets/screenshot5.png)
 
-10. Lets breakdown all sections of the page.
+10. Let's break down all sections of the page.
     a. This section is where you manage your credentials. Credentials are required in order for the project to run. You can also choose to enable logging. Logging will log information about new updates in the terminal.
     b. This section will allow you to select which teachers you want to sign up for. (FYI: you can drag and drop the items in the list to sort.)
     c. This section allows you to switch the server on and off.

@@ -155,6 +155,12 @@ async function run() {
 
 		const schedule = credentialsRes.data;
 
+		if (enableLogging) {
+			console.log('--------------\n');
+
+			console.log(`At: ${new Date()}\n`);
+		}
+
 		if (schedule && schedule.length <= 0 && enableLogging) {
 			console.log('No Sessions Found.\n');
 		}
@@ -229,6 +235,8 @@ async function run() {
 				}
 			}
 		}
+
+		if (enableLogging) console.log('--------------\n');
 	} catch (error) {
 		console.log('Error has occurred. Try again later.');
 
