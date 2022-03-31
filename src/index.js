@@ -45,22 +45,19 @@ async function login(exit = false, credentials) {
 
 	const queryData = qs.stringify(reqInfo);
 
-	const res = await axios(
-		'https://srvusd.infinitecampus.org/campus/verify.jsp',
-		{
+	let res;
+
+	try {
+		res = await axios('https://srvusd.infinitecampus.org/campus/verify.jsp', {
 			method: 'post',
 			data: queryData,
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
 			withCredentials: true,
-		}
-	);
-
-	if (res.status !== 200) {
-		console.log('Error has occurred');
-		if (exit) process.exit(1);
-		else return false;
+		});
+	} catch (error) {
+		handleHTTPErrors(error);
 	}
 
 	if (res.data.trim() === '<AUTHENTICATION>password-error</AUTHENTICATION>') {
@@ -110,11 +107,16 @@ async function login(exit = false, credentials) {
 		},
 	};
 
-	const userRes = await axios(config);
+	try {
+		const userRes = await axios(config);
 
-	personID = userRes.data.personID;
+		personID = userRes.data.personID;
 
-	return true;
+		return true;
+	} catch (error) {
+		handleHTTPErrors(error);
+		return false;
+	}
 }
 
 async function signUp(sessionID, offeringID) {
@@ -135,9 +137,12 @@ async function signUp(sessionID, offeringID) {
 		data: data,
 	};
 
-	const res = await axios(config);
-
-	return res.success;
+	try {
+		const res = await axios(config);
+		return res.success;
+	} catch (error) {
+		return handleHTTPErrors(error);
+	}
 }
 
 async function run() {
@@ -238,12 +243,16 @@ async function run() {
 
 		if (enableLogging) console.log('--------------\n');
 	} catch (error) {
-		console.log('Error has occurred. Try again later.');
-
-		if (error?.response?.status === 401) {
-			return restart();
-		}
+		handleHTTPErrors(error);
 	}
+}
+
+function checkECCONNError(error) {
+	if (error.code === 'ECCONRESET' || 'ECCONREFUSED') {
+		return true;
+	}
+
+	return false;
 }
 
 async function start() {
@@ -262,6 +271,7 @@ async function start() {
 		try {
 			result = await login();
 		} catch (error) {
+			console.log(error);
 			console.log('login error');
 			return stop();
 		}
@@ -284,6 +294,7 @@ async function start() {
 		interval = setInterval(run, 30000);
 
 		console.log('Successfully started server.\n');
+		return true;
 	} else {
 		console.log(
 			'The list contains 0 teachers, so ending process. To continue, add teachers to the list.\n'
@@ -306,11 +317,69 @@ function stop() {
 	console.log('Successfully stopped server.\n');
 }
 
+function waitAsync(time) {
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			resolve();
+		}, time);
+	});
+}
+
 async function restart() {
 	console.log('Restarting Server...\n');
 	stop();
-	await start();
+	const result = await start();
 	console.log('Successfully Restarted Server\n');
+}
+
+async function ping() {
+	const { enableLogging } = await readConfig();
+
+	if (enableLogging) console.log('pinging...');
+	try {
+		let config = {
+			method: 'get',
+			url: 'https://srvusd.infinitecampus.org/campus/resources/my/userAccount',
+			headers: {
+				Cookie: stringCookies,
+			},
+		};
+
+		await axios(config);
+		return true;
+	} catch (error) {
+		if (checkECCONNError(error)) {
+			return false;
+		}
+
+		return true;
+	}
+}
+
+function handleReset() {
+	console.log('Connection error. Switching protocols.\n');
+	stop();
+
+	const resetInterval = setInterval(async () => {
+		if (await ping()) {
+			await start();
+			console.log('Reconnection Success. Switching protocols.\n');
+			clearInterval(resetInterval);
+		}
+	}, 30000);
+}
+
+function handleHTTPErrors(error) {
+	console.log(error);
+	console.log('Error has occurred. Try again later.');
+
+	if (error?.response?.status === 401) {
+		return restart();
+	}
+
+	if (checkECCONNError(error)) {
+		return handleReset();
+	}
 }
 
 app.get('/', async (req, res) => {
