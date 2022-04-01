@@ -69,7 +69,8 @@ Follow these steps to set up the project. The set up might seem really long, but
 
 10. Let's break down all sections of the page.
     a. This section is where you manage your credentials. Credentials are required in order for the project to run. You can also choose to enable logging. Logging will log information about new updates in the terminal.
-    b. This section will allow you to select which teachers you want to sign up for. (FYI: you can drag and drop the items in the list to sort.)
+    b. This section will allow you to select which teachers you want to sign up for. (FYI: you can drag and drop the items in the list to sort.) To find the teacher you want to add, browse through the infinite campus tutorial schedule. Then, type EXACTLY what it says in the teacher column for that tutorial into the add teacher input.
+    ![](assets/screenshot6.png)
     c. This section allows you to switch the server on and off.
     d. This section allows you to end the process. You can also use `Ctrl + C` in the terminal to end the process.
 
